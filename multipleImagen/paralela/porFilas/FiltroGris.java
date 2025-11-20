@@ -1,4 +1,6 @@
 
+package multipleImagen.paralela.porFilas;
+
 import java.awt.image.BufferedImage;
 
 /**

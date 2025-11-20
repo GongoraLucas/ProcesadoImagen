@@ -1,15 +1,17 @@
+package multipleImagen.paralela.porFilas;
+
 import java.awt.image.BufferedImage;
 import java.io.File;
 import javax.imageio.ImageIO;
 
-public class Imagenes {
+public class ImagenesParalelaPorFila {
 
-    public static void main(String[] args) {
+    public static void ejecutar() {
         try {
             long inicioTotal = System.nanoTime();   
 
-            File carpetaEntrada = new File("../../../imagenes");
-            File carpetaSalida = new File("../../../imagenes_grises_concurrente");
+            File carpetaEntrada = new File("../../imagenes");
+            File carpetaSalida = new File("../../imagenes_grises_concurrente");
 
             if (!carpetaSalida.exists())
                 carpetaSalida.mkdirs();

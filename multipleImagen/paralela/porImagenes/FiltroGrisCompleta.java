@@ -1,3 +1,6 @@
+package multipleImagen.paralela.porImagenes;
+
+
 import java.awt.image.BufferedImage;
 
 public class FiltroGrisCompleta implements Runnable {

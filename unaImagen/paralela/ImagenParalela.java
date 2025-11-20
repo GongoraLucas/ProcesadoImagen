@@ -1,3 +1,5 @@
+package unaImagen.paralela;
+
 import java.awt.image.BufferedImage;
 import java.io.File;
 import javax.imageio.ImageIO;
@@ -6,9 +8,9 @@ import javax.imageio.ImageIO;
  *
  * @author andrespillajo
  */
-public class Imagenes {
+public class ImagenParalela {
 
-    public static void main(String[] args) {
+    public static void ejecutar() {
         try {
             // Cargar la imagen
             File archivo = new File("C:\\Users\\Lucas\\Desktop\\paralela\\java\\Imagenes\\PDI-concurrente\\imagenes\\aki-hayakawa-de-chainsaw-man-13585.jpg");
@@ -47,7 +49,7 @@ public class Imagenes {
             }
 
             // Guardar la nueva imagen
-            File archivoSalida = new File("../../imagenes_grises_concurrente/imagen_gris_conc_1.png");
+            File archivoSalida = new File("C:\\Users\\Lucas\\Desktop\\paralela\\java\\Imagenes\\PDI-concurrente\\imagenes_grises_concurrente\\imagen_gris_conc_1.png");
             ImageIO.write(imagen, "png", archivoSalida);
             
             long fin = System.nanoTime(); // Registrar tiempo final

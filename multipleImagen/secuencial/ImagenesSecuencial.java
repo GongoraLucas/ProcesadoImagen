@@ -1,13 +1,15 @@
+package multipleImagen.secuencial;
+
 import java.awt.image.BufferedImage;
 import java.io.File;
 import javax.imageio.ImageIO;
 
-public class ImagenesSinHilos {
+public class ImagenesSecuencial {
 
-    public static void main(String[] args) {
+    public static void ejecutar() {
         try {
             // Carpetas
-            File carpetaEntrada = new File("../../imagenes");
+            File carpetaEntrada = new File("C:\\Users\\Lucas\\Desktop\\paralela\\java\\Imagenes\\PDI-concurrente\\imagenes");
             File carpetaSalida = new File("../../imagenes_grises_secuencial");
 
             // Crear carpeta de salida si no existe

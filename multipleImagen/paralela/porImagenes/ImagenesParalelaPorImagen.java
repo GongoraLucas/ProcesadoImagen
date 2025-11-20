@@ -1,14 +1,17 @@
+package multipleImagen.paralela.porImagenes;
+
+
 import java.awt.image.BufferedImage;
 import java.io.File;
 import javax.imageio.ImageIO;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class Imagenes {
+public class ImagenesParalelaPorImagen {
 
-    public static void main(String[] args) {
+    public static void ejecutar() {
         try {
-            File carpetaEntrada = new File("../../../imagenes");
-            File carpetaSalida = new File("../../../imagenes_grises_concurrente");
+            File carpetaEntrada = new File("C:\\Users\\Lucas\\Desktop\\paralela\\java\\Imagenes\\PDI-concurrente\\imagenes");
+            File carpetaSalida = new File("../../imagenes_grises_concurrente");
 
             if (!carpetaSalida.exists()) carpetaSalida.mkdirs();
 

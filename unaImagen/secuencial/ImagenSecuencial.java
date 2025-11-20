@@ -1,16 +1,17 @@
-
+package unaImagen.secuencial;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
+
 import javax.imageio.ImageIO;
 
 /**
  *
  * @author andrespillajo
  */
-public class ImagenesSinHilos {
+public class ImagenSecuencial {
 
-    public static void main(String[] args) {
+    public static void ejecutar() {
         try {
             // Cargar la imagen desde un archivo
             File archivoEntrada = new File("C:\\Users\\Lucas\\Desktop\\paralela\\java\\Imagenes\\PDI-concurrente\\imagenes\\aki-hayakawa-de-chainsaw-man-13585.jpg"); // Cambia "imagen.png" por la ruta de tu imagen
@@ -55,7 +56,7 @@ public class ImagenesSinHilos {
             long fin = System.nanoTime(); // Registrar tiempo final
 
             // Guardar la imagen resultante
-            File archivoSalida = new File("../../imagenes_grises_secuencial/imagen_gris_1.png"); // Cambia "imagen_gris.png" por la ruta de tu imagen
+            File archivoSalida = new File("C:\\Users\\Lucas\\Desktop\\paralela\\java\\Imagenes\\PDI-concurrente\\imagenes_grises_concurrente\\imagen_gris_sec_1.png"); // Cambia "imagen_gris.png" por la ruta de tu imagen
             ImageIO.write(imagen, "png", archivoSalida);
 
             System.out.println("Imagen convertida a escala de grises y guardada como 'imagen_gris.jpg'.");

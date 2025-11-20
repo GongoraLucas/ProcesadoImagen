@@ -1,3 +1,4 @@
+package unaImagen.paralela;
 
 import java.awt.image.BufferedImage;
 
