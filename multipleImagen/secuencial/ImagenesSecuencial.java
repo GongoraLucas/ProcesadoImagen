@@ -2,6 +2,7 @@ package multipleImagen.secuencial;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
+
 import javax.imageio.ImageIO;
 
 public class ImagenesSecuencial {
@@ -10,7 +11,7 @@ public class ImagenesSecuencial {
         try {
             // Carpetas
             File carpetaEntrada = new File("C:\\Users\\Lucas\\Desktop\\paralela\\java\\Imagenes\\PDI-concurrente\\imagenes");
-            File carpetaSalida = new File("../../imagenes_grises_secuencial");
+            File carpetaSalida = new File("C:\\Users\\Lucas\\Desktop\\paralela\\java\\Imagenes\\PDI-concurrente\\imagenes_grises_secuencial");
 
             // Crear carpeta de salida si no existe
             if (!carpetaSalida.exists()) {

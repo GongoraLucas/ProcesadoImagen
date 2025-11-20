@@ -10,8 +10,8 @@ public class ImagenesParalelaPorFila {
         try {
             long inicioTotal = System.nanoTime();   
 
-            File carpetaEntrada = new File("../../imagenes");
-            File carpetaSalida = new File("../../imagenes_grises_concurrente");
+            File carpetaEntrada = new File("C:\\Users\\Lucas\\Desktop\\paralela\\java\\Imagenes\\PDI-concurrente\\imagenes");
+            File carpetaSalida = new File("C:\\Users\\Lucas\\Desktop\\paralela\\java\\Imagenes\\PDI-concurrente\\imagenes_grises_concurrente");
 
             if (!carpetaSalida.exists())
                 carpetaSalida.mkdirs();

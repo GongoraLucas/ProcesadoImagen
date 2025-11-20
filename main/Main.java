@@ -40,11 +40,11 @@ public class Main {
                     break;
 
                 case 4:
-                    ImagenesParalelaPorImagen.ejecutar();
+                    ImagenesParalelaPorFila.ejecutar();
                     break;
 
                 case 5:
-                    ImagenesParalelaPorFila.ejecutar();
+                    ImagenesParalelaPorImagen.ejecutar();
                     break;
 
                 case 0:

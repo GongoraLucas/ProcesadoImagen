@@ -11,7 +11,7 @@ public class ImagenesParalelaPorImagen {
     public static void ejecutar() {
         try {
             File carpetaEntrada = new File("C:\\Users\\Lucas\\Desktop\\paralela\\java\\Imagenes\\PDI-concurrente\\imagenes");
-            File carpetaSalida = new File("../../imagenes_grises_concurrente");
+            File carpetaSalida = new File("C:\\Users\\Lucas\\Desktop\\paralela\\java\\Imagenes\\PDI-concurrente\\imagenes_grises_concurrente");
 
             if (!carpetaSalida.exists()) carpetaSalida.mkdirs();
 
