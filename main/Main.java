@@ -1,6 +1,7 @@
 package main;
 
 import java.util.Scanner;
+import java.io.File;
 
 import unaImagen.secuencial.ImagenSecuencial;
 import unaImagen.paralela.ImagenParalela;
@@ -9,21 +10,50 @@ import multipleImagen.paralela.porFilas.ImagenesParalelaPorFila;
 import multipleImagen.paralela.porImagenes.ImagenesParalelaPorImagen;
 
 public class Main {
+
+    public static void eliminarArchivos(File carpeta) {
+        if (carpeta.exists() && carpeta.isDirectory()) {
+
+            File[] archivos = carpeta.listFiles();
+            if (archivos != null) {
+                for (File f : archivos) {
+                    if (f.isFile()) {
+                        f.delete();
+                    } else if (f.isDirectory()) {
+                        eliminarArchivos(f);
+                        f.delete();
+                    }
+                }
+            }
+
+            System.out.println("Archivos eliminados en: " + carpeta.getPath());
+        } else {
+            System.out.println("Carpeta no encontrada: " + carpeta.getPath());
+        }
+    }
+
     public static void main(String[] args) {
 
         Scanner sc = new Scanner(System.in);
         int opcion;
 
+        String rutaBase = System.getProperty("user.dir");
+        File carpetaConcurrente = new File(rutaBase + File.separator + "imagenes_grises_concurrente");
+        File carpetaSecuencial = new File(rutaBase + File.separator + "imagenes_grises_secuencial");
+
         do {
+            eliminarArchivos(carpetaSecuencial);
+            eliminarArchivos(carpetaConcurrente);
+
             System.out.println("===== MENÚ PRINCIPAL =====");
             System.out.println("1. Secuencial 1 imagen");
-            System.out.println("2. Secuencial varias imagenes");
+            System.out.println("2. Secuencial varias imágenes");
             System.out.println("3. Paralelo 1 imagen");
-            System.out.println("4. Paralelo varias imagenes por fila");
-            System.out.println("5. Paralelo varias imagenes por imagen");
+            System.out.println("4. Paralelo varias imágenes por fila");
+            System.out.println("5. Paralelo varias imágenes por imagen");
             System.out.println("0. Salir");
             System.out.print("Elige una opción: ");
-            
+
             opcion = sc.nextInt();
 
             switch (opcion) {
@@ -34,8 +64,8 @@ public class Main {
                 case 2:
                     ImagenesSecuencial.ejecutar();
                     break;
-                    
-                    case 3:
+
+                case 3:
                     ImagenParalela.ejecutar();
                     break;
 
@@ -55,7 +85,7 @@ public class Main {
                     System.out.println("Opción no válida, intenta otra vez.");
             }
 
-            System.out.println(); // línea en blanco
+            System.out.println();
 
         } while (opcion != 0);
 

@@ -4,59 +4,54 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import javax.imageio.ImageIO;
 
-/**
- *
- * @author andrespillajo
- */
 public class ImagenParalela {
 
     public static void ejecutar() {
         try {
-            // Cargar la imagen
-            File archivo = new File("C:\\Users\\Lucas\\Desktop\\paralela\\java\\Imagenes\\PDI-concurrente\\imagenes\\aki-hayakawa-de-chainsaw-man-13585.jpg");
-            BufferedImage imagen = ImageIO.read(archivo);
+            String rutaBase = System.getProperty("user.dir");
+
+            File archivoEntrada = new File(
+                rutaBase + File.separator + "imagenes" + File.separator + "aki-hayakawa-de-chainsaw-man-13585.jpg"
+            );
+
+            BufferedImage imagen = ImageIO.read(archivoEntrada);
+
+            if (imagen == null) {
+                System.out.println("No se pudo cargar la imagen.");
+                return;
+            }
 
             int altura = imagen.getHeight();
-            int ancho = imagen.getWidth();
-
-            System.out.println("Procesando imagen de " + ancho + "x" + altura);
-
-            // Crear y asignar hilos
-            int numeroHilos = 4; // Dividir en 4 partes
+            int numeroHilos = 4;
             Thread[] hilos = new Thread[numeroHilos];
 
             int filasPorHilo = altura / numeroHilos;
-            int finFila;
-            
-            long inicio = System.nanoTime(); // Registrar tiempo inicial
-            
+
+            long inicio = System.nanoTime();
+
             for (int i = 0; i < numeroHilos; i++) {
+
                 int inicioFila = i * filasPorHilo;
-                
-                if(i == numeroHilos - 1){
-                    finFila = altura;
-                }else{
-                    finFila = inicioFila + filasPorHilo;
-                }
+                int finFila = (i == numeroHilos - 1)
+                    ? altura
+                    : inicioFila + filasPorHilo;
 
                 hilos[i] = new Thread(new FiltroGris(imagen, inicioFila, finFila));
                 hilos[i].start();
             }
 
-            // Esperar a que todos los hilos terminen
-            for (Thread hilo : hilos) {
-                hilo.join();
-            }
+            for (Thread h : hilos) h.join();
 
-            // Guardar la nueva imagen
-            File archivoSalida = new File("C:\\Users\\Lucas\\Desktop\\paralela\\java\\Imagenes\\PDI-concurrente\\imagenes_grises_concurrente\\imagen_gris_conc_1.png");
+            long fin = System.nanoTime();
+
+            File carpetaSalida = new File(rutaBase + File.separator + "imagenes_grises_concurrente");
+            carpetaSalida.mkdirs();
+
+            File archivoSalida = new File(carpetaSalida, "imagen_gris_paralela.png");
             ImageIO.write(imagen, "png", archivoSalida);
-            
-            long fin = System.nanoTime(); // Registrar tiempo final
 
-            System.out.println("Imagen procesada y guardada como 'imagen_gris_conc.png'");
-            System.out.println("Tiempo de ejecución: " + (fin - inicio) / 1_000_000 + " ms");
-            
+            System.out.println("Tiempo total: " + (fin - inicio) / 1_000_000 + " ms");
+
         } catch (Exception e) {
             e.printStackTrace();
         }

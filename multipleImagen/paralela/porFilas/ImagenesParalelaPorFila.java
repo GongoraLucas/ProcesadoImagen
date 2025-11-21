@@ -8,67 +8,53 @@ public class ImagenesParalelaPorFila {
 
     public static void ejecutar() {
         try {
-            long inicioTotal = System.nanoTime();   
 
-            File carpetaEntrada = new File("C:\\Users\\Lucas\\Desktop\\paralela\\java\\Imagenes\\PDI-concurrente\\imagenes");
-            File carpetaSalida = new File("C:\\Users\\Lucas\\Desktop\\paralela\\java\\Imagenes\\PDI-concurrente\\imagenes_grises_concurrente");
+            String rutaBase = System.getProperty("user.dir");
 
-            if (!carpetaSalida.exists())
-                carpetaSalida.mkdirs();
+            File carpetaEntrada = new File(rutaBase + File.separator + "imagenes");
+            File carpetaSalida  = new File(rutaBase + File.separator + "imagenes_grises_concurrente");
+            carpetaSalida.mkdirs();
 
-            File[] archivos = carpetaEntrada.listFiles((dir, name) ->
-                name.toLowerCase().endsWith(".png") ||
-                name.toLowerCase().endsWith(".jpg") ||
-                name.toLowerCase().endsWith(".jpeg")
+            File[] archivos = carpetaEntrada.listFiles((d, n) ->
+                n.toLowerCase().endsWith(".png") ||
+                n.toLowerCase().endsWith(".jpg") ||
+                n.toLowerCase().endsWith(".jpeg")
             );
 
             if (archivos == null || archivos.length == 0) {
-                System.out.println("No hay imágenes para procesar.");
+                System.out.println("No hay imágenes.");
                 return;
             }
 
-            for (File archivoEntrada : archivos) {
+            long inicioTotal = System.nanoTime();
 
-                System.out.println("Procesando: " + archivoEntrada.getName());
+            for (File archivo : archivos) {
 
-                BufferedImage imagen = ImageIO.read(archivoEntrada);
+                BufferedImage imagen = ImageIO.read(archivo);
+                if (imagen == null) continue;
 
-                if (imagen == null) {
-                    System.out.println("No se pudo cargar la imagen " + archivoEntrada.getName());
-                    continue;
-                }
+                int alto = imagen.getHeight();
+                Thread[] hilos = new Thread[alto];
 
-                int altura = imagen.getHeight();   // 🔥 un hilo por fila
-                Thread[] hilos = new Thread[altura];
+                long inicioImg = System.nanoTime();
 
-                long inicioImagen = System.nanoTime();
-
-                // Crear un hilo para cada fila
-                for (int fila = 0; fila < altura; fila++) {
+                for (int fila = 0; fila < alto; fila++) {
                     hilos[fila] = new Thread(new FiltroGris(imagen, fila, fila + 1));
                     hilos[fila].start();
                 }
 
-                // Esperar a que todos terminen
-                for (Thread t : hilos) {
-                    t.join();
-                }
+                for (Thread h : hilos) h.join();
 
-                long finImagen = System.nanoTime();
+                long finImg = System.nanoTime();
 
-                // Guardar imagen procesada
-                String nombreSalida = archivoEntrada.getName().replace(".", "_gris.");
-                File archivoSalida = new File(carpetaSalida, nombreSalida);
+                String nombreSalida = archivo.getName().replace(".", "_gris.");
+                ImageIO.write(imagen, "png", new File(carpetaSalida, nombreSalida));
 
-                ImageIO.write(imagen, "png", archivoSalida);
-
-                System.out.println("Guardado: " + archivoSalida.getPath());
-                System.out.println("Tiempo por imagen: " + (finImagen - inicioImagen) / 1_000_000 + " ms\n");
+                System.out.println("Tiempo por imagen: " + (finImg - inicioImg) / 1_000_000 + " ms");
             }
 
-            long finTotal = System.nanoTime(); 
-
-             System.out.println("Tiempo total del procesamiento: " + (finTotal - inicioTotal) / 1_000_000 + " ms");
+            long finTotal = System.nanoTime();
+            System.out.println("Tiempo TOTAL: " + (finTotal - inicioTotal) / 1_000_000 + " ms");
 
         } catch (Exception e) {
             e.printStackTrace();

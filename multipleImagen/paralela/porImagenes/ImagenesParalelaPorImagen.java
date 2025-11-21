@@ -1,6 +1,5 @@
 package multipleImagen.paralela.porImagenes;
 
-
 import java.awt.image.BufferedImage;
 import java.io.File;
 import javax.imageio.ImageIO;
@@ -10,74 +9,71 @@ public class ImagenesParalelaPorImagen {
 
     public static void ejecutar() {
         try {
-            File carpetaEntrada = new File("C:\\Users\\Lucas\\Desktop\\paralela\\java\\Imagenes\\PDI-concurrente\\imagenes");
-            File carpetaSalida = new File("C:\\Users\\Lucas\\Desktop\\paralela\\java\\Imagenes\\PDI-concurrente\\imagenes_grises_concurrente");
 
-            if (!carpetaSalida.exists()) carpetaSalida.mkdirs();
+            String rutaBase = System.getProperty("user.dir");
 
-            File[] archivos = carpetaEntrada.listFiles((dir, name) ->
-                    name.toLowerCase().endsWith(".png") ||
-                    name.toLowerCase().endsWith(".jpg") ||
-                    name.toLowerCase().endsWith(".jpeg")
+            File carpetaEntrada = new File(rutaBase + File.separator + "imagenes");
+            File carpetaSalida  = new File(rutaBase + File.separator + "imagenes_grises_concurrente");
+            carpetaSalida.mkdirs();
+
+            File[] archivos = carpetaEntrada.listFiles((d, n) ->
+                n.toLowerCase().endsWith(".png") ||
+                n.toLowerCase().endsWith(".jpg") ||
+                n.toLowerCase().endsWith(".jpeg")
             );
 
             if (archivos == null || archivos.length == 0) {
-                System.out.println("No hay imágenes para procesar.");
+                System.out.println("No hay imágenes.");
                 return;
             }
 
             int numeroHilos = Runtime.getRuntime().availableProcessors();
             Thread[] hilos = new Thread[numeroHilos];
 
-            AtomicInteger indiceGlobal = new AtomicInteger(0);
+            AtomicInteger indice = new AtomicInteger(0);
 
-            long inicio = System.nanoTime();
+            long inicioTotal = System.nanoTime();
 
             for (int i = 0; i < numeroHilos; i++) {
                 hilos[i] = new Thread(() -> {
-                    int index;
-                    
-                    while ((index = indiceGlobal.getAndIncrement()) < archivos.length) {
-                        File archivoEntrada = archivos[index];
-                        
+
+                    int idx;
+
+                    while ((idx = indice.getAndIncrement()) < archivos.length) {
+
+                        File archivo = archivos[idx];
+
                         try {
-                            BufferedImage imagen = ImageIO.read(archivoEntrada);
-                            
-                            long inicioHilo = System.nanoTime();
+                            BufferedImage img = ImageIO.read(archivo);
 
-                            new FiltroGrisCompleta(imagen).run();
+                            long ti = System.nanoTime();
 
-                            String nombreSalida = archivoEntrada.getName().replace(".", "_gris.");
-                            File salida = new File(carpetaSalida, nombreSalida);
+                            new FiltroGrisCompleta(img).run();
 
-                            ImageIO.write(imagen, "png", salida);
+                            long tf = System.nanoTime();
 
-                            System.out.println("Procesada: " + archivoEntrada.getName());
+                            String salidaNombre = archivo.getName().replace(".", "_gris.");
+                            ImageIO.write(img, "png", new File(carpetaSalida, salidaNombre));
 
-                            long finHilo = System.nanoTime();
-                            System.out.println("Tiempo por imagen: " + (finHilo - inicioHilo) / 1_000_000 + " ms\n");
+                            System.out.println("Tiempo por imagen: " + (tf - ti) / 1_000_000 + " ms");
 
                         } catch (Exception e) {
-                            System.out.println("Error procesando " + archivoEntrada.getName());
+                            System.out.println("Error procesando " + archivo.getName());
                         }
                     }
+
                 });
 
                 hilos[i].start();
             }
 
-            for (Thread hilo : hilos) {
-                hilo.join();
-            }
+            for (Thread h : hilos) h.join();
 
-            long fin = System.nanoTime();
-
-            System.out.println("\nProcesamiento terminado.");
-            System.out.println("Tiempo total: " + (fin - inicio) / 1_000_000 + " ms");
+            long finTotal = System.nanoTime();
+            System.out.println("Tiempo TOTAL: " + (finTotal - inicioTotal) / 1_000_000 + " ms");
 
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 }
-

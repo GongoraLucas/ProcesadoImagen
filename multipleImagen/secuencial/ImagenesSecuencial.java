@@ -2,85 +2,71 @@ package multipleImagen.secuencial;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
-
 import javax.imageio.ImageIO;
 
 public class ImagenesSecuencial {
 
     public static void ejecutar() {
         try {
-            // Carpetas
-            File carpetaEntrada = new File("C:\\Users\\Lucas\\Desktop\\paralela\\java\\Imagenes\\PDI-concurrente\\imagenes");
-            File carpetaSalida = new File("C:\\Users\\Lucas\\Desktop\\paralela\\java\\Imagenes\\PDI-concurrente\\imagenes_grises_secuencial");
 
-            // Crear carpeta de salida si no existe
-            if (!carpetaSalida.exists()) {
-                carpetaSalida.mkdirs();
-            }
+            String rutaBase = System.getProperty("user.dir");
 
-            // Listar archivos de imagen
-            File[] archivos = carpetaEntrada.listFiles((dir, name) ->
-                    name.toLowerCase().endsWith(".png") ||
-                    name.toLowerCase().endsWith(".jpg") ||
-                    name.toLowerCase().endsWith(".jpeg")
+            File carpetaEntrada = new File(rutaBase + File.separator + "imagenes");
+            File carpetaSalida = new File(rutaBase + File.separator + "imagenes_grises_secuencial");
+            carpetaSalida.mkdirs();
+
+            File[] archivos = carpetaEntrada.listFiles((d, n) ->
+                n.toLowerCase().endsWith(".png") ||
+                n.toLowerCase().endsWith(".jpg") ||
+                n.toLowerCase().endsWith(".jpeg")
             );
 
             if (archivos == null || archivos.length == 0) {
-                System.out.println("No se encontraron imágenes en la carpeta 'imagenes'.");
+                System.out.println("No hay imágenes.");
                 return;
             }
 
-            System.out.println("Total de imágenes encontradas: " + archivos.length);
-
             long inicioTotal = System.nanoTime();
 
-            for (File archivoEntrada : archivos) {
+            for (File archivo : archivos) {
 
-                System.out.println("Procesando: " + archivoEntrada.getName());
+                BufferedImage imagen = ImageIO.read(archivo);
 
-                BufferedImage imagen = ImageIO.read(archivoEntrada);
-
-                if (imagen == null) {
-                    System.out.println("No se pudo cargar la imagen " + archivoEntrada.getName());
-                    continue;
-                }
-
-                int ancho = imagen.getWidth();
-                int alto = imagen.getHeight();
+                if (imagen == null) continue;
 
                 long inicio = System.nanoTime();
 
-                // Procesamiento en escala de grises
+                int ancho = imagen.getWidth();
+                int alto  = imagen.getHeight();
+
                 for (int y = 0; y < alto; y++) {
                     for (int x = 0; x < ancho; x++) {
+
                         int pixel = imagen.getRGB(x, y);
 
-                        int alpha = (pixel >> 24) & 0xff;
-                        int red = (pixel >> 16) & 0xff;
-                        int green = (pixel >> 8) & 0xff;
-                        int blue = pixel & 0xff;
+                        int a = (pixel >> 24) & 0xff;
+                        int r = (pixel >> 16) & 0xff;
+                        int g = (pixel >> 8)  & 0xff;
+                        int b =  pixel        & 0xff;
 
-                        int gris = (red + green + blue) / 3;
+                        int gris = (r + g + b) / 3;
+                        int nuevo =
+                            (a << 24) | (gris << 16) | (gris << 8) | gris;
 
-                        int nuevoPixel = (alpha << 24) | (gris << 16) | (gris << 8) | gris;
-                        imagen.setRGB(x, y, nuevoPixel);
+                        imagen.setRGB(x, y, nuevo);
                     }
                 }
 
                 long fin = System.nanoTime();
 
-                // Guardar con mismo nombre + "_gris"
-                String nombreSalida = archivoEntrada.getName().replace(".", "_gris.");
-                File archivoSalida = new File(carpetaSalida, nombreSalida);
+                String nombreSalida = archivo.getName().replace(".", "_gris.");
+                ImageIO.write(imagen, "png", new File(carpetaSalida, nombreSalida));
 
-                ImageIO.write(imagen, "png", archivoSalida);
-
-                System.out.println("Guardado en: " + archivoSalida.getPath());
-                System.out.println("Tiempo por imagen: " + (fin - inicio) / 1_000_000 + " ms\n");
+                System.out.println("Tiempo por imagen: " + (fin - inicio) / 1_000_000 + " ms");
             }
 
             long finTotal = System.nanoTime();
-            System.out.println("Tiempo total del procesamiento: " + (finTotal - inicioTotal) / 1_000_000 + " ms");
+            System.out.println("Tiempo TOTAL: " + (finTotal - inicioTotal) / 1_000_000 + " ms");
 
         } catch (Exception e) {
             e.printStackTrace();
