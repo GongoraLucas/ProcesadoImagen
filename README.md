@@ -6,3 +6,5 @@
 3. En Visual Studio Code, aplasta las teclas: ctrl + shift + c  -> para abrir una terminal en la ruta donde se encuentra el proyecto.
 4. Compilalo con: javac main/Main.java
 5. Ejecutalo con: java main.Main
+
+**Ten en cuenta poner tus imagenes a procesar en imagenes**
