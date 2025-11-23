@@ -28,6 +28,10 @@ public class ImagenesParalelaPorFila {
 
             long inicioTotal = System.nanoTime();
 
+            // ------------ variables para suma y conteo ----------
+            long sumaTiempos = 0;
+            int cantidadImagenes = 0;
+
             for (File archivo : archivos) {
 
                 BufferedImage imagen = ImageIO.read(archivo);
@@ -47,14 +51,25 @@ public class ImagenesParalelaPorFila {
 
                 long finImg = System.nanoTime();
 
+                long tiempoMs = (finImg - inicioImg) / 1_000_000;
+                System.out.println("Tiempo por imagen: " + tiempoMs + " ms");
+
+                sumaTiempos += tiempoMs;
+                cantidadImagenes++;
+
                 String nombreSalida = archivo.getName().replace(".", "_gris.");
                 ImageIO.write(imagen, "png", new File(carpetaSalida, nombreSalida));
-
-                System.out.println("Tiempo por imagen: " + (finImg - inicioImg) / 1_000_000 + " ms");
             }
 
             long finTotal = System.nanoTime();
             System.out.println("Tiempo TOTAL: " + (finTotal - inicioTotal) / 1_000_000 + " ms");
+
+            if (cantidadImagenes > 0) {
+                double promedio = (double) sumaTiempos / cantidadImagenes;
+                System.out.println("------------------------------------------");
+                System.out.println("Suma de tiempos por imagen: " + sumaTiempos + " ms");
+                System.out.println("Promedio por imagen: " + promedio + " ms");
+            }
 
         } catch (Exception e) {
             e.printStackTrace();

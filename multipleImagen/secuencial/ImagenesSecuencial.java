@@ -28,6 +28,11 @@ public class ImagenesSecuencial {
 
             long inicioTotal = System.nanoTime();
 
+            // -------- NUEVO: acumuladores ----------
+            long sumaTiempos = 0;
+            int cantidadImagenes = 0;
+            // ---------------------------------------
+
             for (File archivo : archivos) {
 
                 BufferedImage imagen = ImageIO.read(archivo);
@@ -51,7 +56,7 @@ public class ImagenesSecuencial {
 
                         int gris = (r + g + b) / 3;
                         int nuevo =
-                            (a << 24) | (gris << 16) | (gris << 8) | gris;
+                                (a << 24) | (gris << 16) | (gris << 8) | gris;
 
                         imagen.setRGB(x, y, nuevo);
                     }
@@ -59,14 +64,26 @@ public class ImagenesSecuencial {
 
                 long fin = System.nanoTime();
 
+                long tiempoMs = (fin - inicio) / 1_000_000;
+                System.out.println("Tiempo por imagen: " + tiempoMs + " ms");
+
+                // -------- sumar tiempos ----------
+                sumaTiempos += tiempoMs;
+                cantidadImagenes++;
+
                 String nombreSalida = archivo.getName().replace(".", "_gris.");
                 ImageIO.write(imagen, "png", new File(carpetaSalida, nombreSalida));
-
-                System.out.println("Tiempo por imagen: " + (fin - inicio) / 1_000_000 + " ms");
             }
 
             long finTotal = System.nanoTime();
             System.out.println("Tiempo TOTAL: " + (finTotal - inicioTotal) / 1_000_000 + " ms");
+
+            if (cantidadImagenes > 0) {
+                double promedio = (double) sumaTiempos / cantidadImagenes;
+                System.out.println("------------------------------------------");
+                System.out.println("Suma de tiempos por imagen: " + sumaTiempos + " ms");
+                System.out.println("Promedio por imagen: " + promedio + " ms");
+            }
 
         } catch (Exception e) {
             e.printStackTrace();
