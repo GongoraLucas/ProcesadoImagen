@@ -42,8 +42,10 @@ public class Main {
         File carpetaSecuencial = new File(rutaBase + File.separator + "imagenes_grises_secuencial");
 
         do {
+            System.out.println("\n\t================== Notificaciones ==============\n\t");
             eliminarArchivos(carpetaSecuencial);
             eliminarArchivos(carpetaConcurrente);
+            System.out.println("\n\t=================================================\n\t");
 
             System.out.println("===== MENÚ PRINCIPAL =====");
             System.out.println("1. Secuencial 1 imagen");

@@ -3,6 +3,7 @@ package unaImagen.paralela;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import javax.imageio.ImageIO;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import filtros.gris.paralela.filas.FiltroGrisPorFila;
 
@@ -23,22 +24,29 @@ public class ImagenParalela {
                 return;
             }
 
-            int altura = imagen.getHeight();
-            int numeroHilos = 4;
+            int alto = imagen.getHeight();
+
+    
+            int numeroHilos = Runtime.getRuntime().availableProcessors();
             Thread[] hilos = new Thread[numeroHilos];
 
-            int filasPorHilo = altura / numeroHilos;
+            AtomicInteger filaActual = new AtomicInteger(0);
+
 
             long inicio = System.nanoTime();
 
             for (int i = 0; i < numeroHilos; i++) {
+                hilos[i] = new Thread(() -> {
 
-                int inicioFila = i * filasPorHilo;
-                int finFila = (i == numeroHilos - 1)
-                    ? altura
-                    : inicioFila + filasPorHilo;
+                    int fila;
 
-                hilos[i] = new Thread(new FiltroGrisPorFila(imagen, inicioFila, finFila));
+                    while ((fila = filaActual.getAndIncrement()) < alto) {
+                    
+                        new FiltroGrisPorFila(imagen, fila, fila + 1).run();
+                    }
+
+                });
+
                 hilos[i].start();
             }
 
