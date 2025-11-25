@@ -5,6 +5,7 @@ import java.io.File;
 
 import unaImagen.secuencial.ImagenSecuencial;
 import unaImagen.paralela.ImagenParalela;
+import unaImagen.paralela.ImagenParalelaArcoiris;
 import multipleImagen.secuencial.ImagenesSecuencial;
 import multipleImagen.paralela.porFilas.ImagenesParalelaPorFila;
 import multipleImagen.paralela.porImagenes.ImagenesParalelaPorImagen;
@@ -49,10 +50,11 @@ public class Main {
 
             System.out.println("===== MENÚ PRINCIPAL =====");
             System.out.println("1. Secuencial 1 imagen");
-            System.out.println("2. Secuencial varias imágenes");
-            System.out.println("3. Paralelo 1 imagen");
-            System.out.println("4. Paralelo varias imágenes por fila");
-            System.out.println("5. Paralelo varias imágenes por imagen");
+            System.out.println("2. Paralelo 1 imagen");
+            System.out.println("3. Paralelo 1 imagen (Arcoiris)");
+            System.out.println("4. Secuencial varias imágenes");
+            System.out.println("5. Paralelo varias imágenes por fila");
+            System.out.println("6. Paralelo varias imágenes por imagen");
             System.out.println("0. Salir");
             System.out.print("Elige una opción: ");
 
@@ -64,18 +66,21 @@ public class Main {
                     break;
 
                 case 2:
-                    ImagenesSecuencial.ejecutar();
-                    break;
-
-                case 3:
                     ImagenParalela.ejecutar();
+                    break;
+                case 3:
+                    ImagenParalelaArcoiris.ejecutar();
                     break;
 
                 case 4:
-                    ImagenesParalelaPorFila.ejecutar();
+                    ImagenesSecuencial.ejecutar();
                     break;
 
                 case 5:
+                    ImagenesParalelaPorFila.ejecutar();
+                    break;
+
+                case 6:
                     ImagenesParalelaPorImagen.ejecutar();
                     break;
 
