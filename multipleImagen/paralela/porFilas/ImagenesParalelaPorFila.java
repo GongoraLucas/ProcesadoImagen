@@ -2,6 +2,7 @@ package multipleImagen.paralela.porFilas;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.util.Locale;
 import java.util.concurrent.atomic.AtomicInteger;
 import javax.imageio.ImageIO;
 
@@ -14,14 +15,19 @@ public class ImagenesParalelaPorFila {
             String rutaBase = System.getProperty("user.dir");
 
             File carpetaEntrada = new File(rutaBase + File.separator + "imagenes");
-            File carpetaSalida  = new File(rutaBase + File.separator + "imagenes_grises_concurrente");
-            carpetaSalida.mkdirs();
+            File carpetaSalida = new File(rutaBase + File.separator + "imagenes_grises_concurrente");
 
-            File[] archivos = carpetaEntrada.listFiles((d, n) ->
-                n.toLowerCase().endsWith(".png") ||
-                n.toLowerCase().endsWith(".jpg") ||
-                n.toLowerCase().endsWith(".jpeg")
-            );
+            if (!carpetaSalida.exists()) {
+                boolean ok = carpetaSalida.mkdirs();
+                if (!ok) {
+                    System.err.println("Advertencia: no se pudo crear la carpeta de salida: " + carpetaSalida.getAbsolutePath());
+                }
+            }
+
+            File[] archivos = carpetaEntrada.listFiles((d, n) -> {
+                String name = n.toLowerCase(Locale.ROOT);
+                return name.endsWith(".png") || name.endsWith(".jpg") || name.endsWith(".jpeg");
+            });
 
             if (archivos == null || archivos.length == 0) {
                 System.out.println("No hay imágenes.");
@@ -30,11 +36,7 @@ public class ImagenesParalelaPorFila {
 
             long inicioTotal = System.nanoTime();
 
-            long sumaTiempos = 0;
-            int cantidadImagenes = 0;
-
             for (File archivo : archivos) {
-
                 BufferedImage imagen = ImageIO.read(archivo);
                 if (imagen == null) continue;
 
@@ -48,13 +50,10 @@ public class ImagenesParalelaPorFila {
 
                 for (int i = 0; i < hilosDisponibles; i++) {
                     hilos[i] = new Thread(() -> {
-
                         int fila;
-
                         while ((fila = filaActual.getAndIncrement()) < alto) {
                             new FiltroGrisPorFila(imagen, fila, fila + 1).run();
                         }
-
                     });
                     hilos[i].start();
                 }
@@ -63,11 +62,7 @@ public class ImagenesParalelaPorFila {
 
                 long finImg = System.nanoTime();
                 long tiempoMs = (finImg - inicioImg) / 1_000_000;
-
                 System.out.println("Tiempo por imagen: " + tiempoMs + " ms");
-
-                sumaTiempos += tiempoMs;
-                cantidadImagenes++;
 
                 String nombreSalida = archivo.getName().replace(".", "_gris.");
                 ImageIO.write(imagen, "png", new File(carpetaSalida, nombreSalida));
@@ -75,13 +70,6 @@ public class ImagenesParalelaPorFila {
 
             long finTotal = System.nanoTime();
             System.out.println("Tiempo TOTAL: " + (finTotal - inicioTotal) / 1_000_000 + " ms");
-
-            if (cantidadImagenes > 0) {
-                double promedio = (double) sumaTiempos / cantidadImagenes;
-                System.out.println("------------------------------------------");
-                System.out.println("Suma de tiempos por imagen: " + sumaTiempos + " ms");
-                System.out.println("Promedio por imagen: " + promedio + " ms");
-            }
 
         } catch (Exception e) {
             e.printStackTrace();
