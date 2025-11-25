@@ -62,7 +62,7 @@ public class ImagenesParalelaPorFila {
 
                 long finImg = System.nanoTime();
                 long tiempoMs = (finImg - inicioImg) / 1_000_000;
-                System.out.println("Tiempo por imagen: " + tiempoMs + " ms");
+                System.out.println("Procesada: " + archivo.getName() +" en " + tiempoMs + " ms");
 
                 String nombreSalida = archivo.getName().replace(".", "_gris.");
                 ImageIO.write(imagen, "png", new File(carpetaSalida, nombreSalida));

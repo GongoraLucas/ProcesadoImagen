@@ -58,7 +58,7 @@ public class ImagenesSecuencial {
                 long fin = System.nanoTime();
                 long tiempoMs = (fin - inicio) / 1_000_000;
 
-                System.out.println("Tiempo por imagen: " + tiempoMs + " ms");
+                System.out.println("Procesada: " + archivo.getName() +" en " + tiempoMs + " ms");
 
                 String nombreSalida = archivo.getName().replace(".", "_gris.");
                 ImageIO.write(imagen, "png", new File(carpetaSalida, nombreSalida));
