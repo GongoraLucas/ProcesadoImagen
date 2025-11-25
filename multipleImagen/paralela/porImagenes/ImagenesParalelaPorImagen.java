@@ -37,11 +37,8 @@ public class ImagenesParalelaPorImagen {
 
             long inicioTotal = System.nanoTime();
 
-            // -------- acumuladores --------
-            AtomicInteger cantidadImagenes = new AtomicInteger(0);
-            AtomicInteger sumaTiempos = new AtomicInteger(0);
-
             for (int i = 0; i < numeroHilos; i++) {
+
                 hilos[i] = new Thread(() -> {
 
                     int idx;
@@ -51,20 +48,17 @@ public class ImagenesParalelaPorImagen {
                         File archivo = archivos[idx];
 
                         try {
-                            BufferedImage img = ImageIO.read(archivo);
 
+                            BufferedImage img = ImageIO.read(archivo);
                             long ti = System.nanoTime();
 
                             new FiltroGrisPorImagen(img).run();
 
                             long tf = System.nanoTime();
-
                             long tiempoMs = (tf - ti) / 1_000_000;
-                            System.out.println("Tiempo por imagen: " + tiempoMs + " ms");
 
-                            sumaTiempos.addAndGet((int) tiempoMs);
-                            cantidadImagenes.incrementAndGet();
-                            
+                            System.out.println("Procesada: " + archivo.getName() +
+                                               " en " + tiempoMs + " ms");
 
                             String salidaNombre = archivo.getName().replace(".", "_gris.");
                             ImageIO.write(img, "png", new File(carpetaSalida, salidaNombre));
@@ -82,14 +76,7 @@ public class ImagenesParalelaPorImagen {
             for (Thread h : hilos) h.join();
 
             long finTotal = System.nanoTime();
-            System.out.println("Tiempo TOTAL: " + (finTotal - inicioTotal) / 1_000_000 + " ms");
-        
-            if (cantidadImagenes.get() > 0) {
-                double promedio = (double) sumaTiempos.get() / cantidadImagenes.get();
-                System.out.println("------------------------------------------");
-                System.out.println("Suma de tiempos por imagen: " + sumaTiempos.get() + " ms");
-                System.out.println("Promedio por imagen: " + promedio + " ms");
-            }
+            System.out.println("Tiempo TOTAL paralelo: " + (finTotal - inicioTotal) / 1_000_000 + " ms");
 
         } catch (Exception e) {
             e.printStackTrace();
