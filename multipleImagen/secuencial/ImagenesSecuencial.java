@@ -28,15 +28,9 @@ public class ImagenesSecuencial {
 
             long inicioTotal = System.nanoTime();
 
-            // -------- NUEVO: acumuladores ----------
-            long sumaTiempos = 0;
-            int cantidadImagenes = 0;
-            // ---------------------------------------
-
             for (File archivo : archivos) {
 
                 BufferedImage imagen = ImageIO.read(archivo);
-
                 if (imagen == null) continue;
 
                 long inicio = System.nanoTime();
@@ -55,21 +49,16 @@ public class ImagenesSecuencial {
                         int b =  pixel        & 0xff;
 
                         int gris = (r + g + b) / 3;
-                        int nuevo =
-                                (a << 24) | (gris << 16) | (gris << 8) | gris;
+                        int nuevo = (a << 24) | (gris << 16) | (gris << 8) | gris;
 
                         imagen.setRGB(x, y, nuevo);
                     }
                 }
 
                 long fin = System.nanoTime();
-
                 long tiempoMs = (fin - inicio) / 1_000_000;
-                System.out.println("Tiempo por imagen: " + tiempoMs + " ms");
 
-                // -------- sumar tiempos ----------
-                sumaTiempos += tiempoMs;
-                cantidadImagenes++;
+                System.out.println("Tiempo por imagen: " + tiempoMs + " ms");
 
                 String nombreSalida = archivo.getName().replace(".", "_gris.");
                 ImageIO.write(imagen, "png", new File(carpetaSalida, nombreSalida));
@@ -77,13 +66,6 @@ public class ImagenesSecuencial {
 
             long finTotal = System.nanoTime();
             System.out.println("Tiempo TOTAL: " + (finTotal - inicioTotal) / 1_000_000 + " ms");
-
-            if (cantidadImagenes > 0) {
-                double promedio = (double) sumaTiempos / cantidadImagenes;
-                System.out.println("------------------------------------------");
-                System.out.println("Suma de tiempos por imagen: " + sumaTiempos + " ms");
-                System.out.println("Promedio por imagen: " + promedio + " ms");
-            }
 
         } catch (Exception e) {
             e.printStackTrace();

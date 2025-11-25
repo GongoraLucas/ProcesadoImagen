@@ -1,13 +1,13 @@
-package multipleImagen.paralela.porImagenes;
+package filtros.gris.paralela.imagen;
 
 
 import java.awt.image.BufferedImage;
 
-public class FiltroGrisCompleta implements Runnable {
+public class FiltroGrisPorImagen implements Runnable {
 
     private final BufferedImage imagen;
 
-    public FiltroGrisCompleta(BufferedImage imagen) {
+    public FiltroGrisPorImagen(BufferedImage imagen) {
         this.imagen = imagen;
     }
 

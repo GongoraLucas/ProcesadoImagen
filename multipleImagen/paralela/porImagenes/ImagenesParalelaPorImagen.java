@@ -3,6 +3,9 @@ package multipleImagen.paralela.porImagenes;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import javax.imageio.ImageIO;
+
+import filtros.gris.paralela.imagen.FiltroGrisPorImagen;
+
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class ImagenesParalelaPorImagen {
@@ -52,7 +55,7 @@ public class ImagenesParalelaPorImagen {
 
                             long ti = System.nanoTime();
 
-                            new FiltroGrisCompleta(img).run();
+                            new FiltroGrisPorImagen(img).run();
 
                             long tf = System.nanoTime();
 

@@ -1,5 +1,5 @@
 
-package multipleImagen.paralela.porFilas;
+package filtros.gris.paralela.filas;
 
 import java.awt.image.BufferedImage;
 
@@ -11,12 +11,12 @@ import java.awt.image.BufferedImage;
  * @author Evelyn Villareal
  */
 
-public class FiltroGris implements Runnable{
+public class FiltroGrisPorFila implements Runnable{
     private final BufferedImage imagen;
     private final int inicioFila;
     private final int finFila;
     
-    public FiltroGris(BufferedImage imagen, int inicioFila, int finFila) {
+    public FiltroGrisPorFila(BufferedImage imagen, int inicioFila, int finFila) {
         this.imagen = imagen;
         this.inicioFila = inicioFila;
         this.finFila = finFila;

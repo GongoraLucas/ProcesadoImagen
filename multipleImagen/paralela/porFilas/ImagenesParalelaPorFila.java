@@ -2,13 +2,15 @@ package multipleImagen.paralela.porFilas;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.util.concurrent.atomic.AtomicInteger;
 import javax.imageio.ImageIO;
+
+import filtros.gris.paralela.filas.FiltroGrisPorFila;
 
 public class ImagenesParalelaPorFila {
 
     public static void ejecutar() {
         try {
-
             String rutaBase = System.getProperty("user.dir");
 
             File carpetaEntrada = new File(rutaBase + File.separator + "imagenes");
@@ -28,7 +30,6 @@ public class ImagenesParalelaPorFila {
 
             long inicioTotal = System.nanoTime();
 
-            // ------------ variables para suma y conteo ----------
             long sumaTiempos = 0;
             int cantidadImagenes = 0;
 
@@ -38,20 +39,31 @@ public class ImagenesParalelaPorFila {
                 if (imagen == null) continue;
 
                 int alto = imagen.getHeight();
-                Thread[] hilos = new Thread[alto];
+                int hilosDisponibles = Runtime.getRuntime().availableProcessors();
+
+                Thread[] hilos = new Thread[hilosDisponibles];
+                AtomicInteger filaActual = new AtomicInteger(0);
 
                 long inicioImg = System.nanoTime();
 
-                for (int fila = 0; fila < alto; fila++) {
-                    hilos[fila] = new Thread(new FiltroGris(imagen, fila, fila + 1));
-                    hilos[fila].start();
+                for (int i = 0; i < hilosDisponibles; i++) {
+                    hilos[i] = new Thread(() -> {
+
+                        int fila;
+
+                        while ((fila = filaActual.getAndIncrement()) < alto) {
+                            new FiltroGrisPorFila(imagen, fila, fila + 1).run();
+                        }
+
+                    });
+                    hilos[i].start();
                 }
 
                 for (Thread h : hilos) h.join();
 
                 long finImg = System.nanoTime();
-
                 long tiempoMs = (finImg - inicioImg) / 1_000_000;
+
                 System.out.println("Tiempo por imagen: " + tiempoMs + " ms");
 
                 sumaTiempos += tiempoMs;

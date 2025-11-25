@@ -4,6 +4,8 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import javax.imageio.ImageIO;
 
+import filtros.gris.paralela.filas.FiltroGrisPorFila;
+
 public class ImagenParalela {
 
     public static void ejecutar() {
@@ -36,7 +38,7 @@ public class ImagenParalela {
                     ? altura
                     : inicioFila + filasPorHilo;
 
-                hilos[i] = new Thread(new FiltroGris(imagen, inicioFila, finFila));
+                hilos[i] = new Thread(new FiltroGrisPorFila(imagen, inicioFila, finFila));
                 hilos[i].start();
             }
 
